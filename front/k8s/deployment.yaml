@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: front
+  labels:
+    app: front
+  annotations:
+    deployment.kubernetes.io/revision: '1'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: front
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: front
+    spec:
+      containers:
+        - image: registry.example.com/root/front/front
+          name: front
+          ports:
+          - containerPort: 8081
+          env:
+          - name: AUTH_API_ADDRESS
+            value: http://front:8081
+          - name: PORT
+            value: "8080"
+          - name: TODOS_API_ADDRESS
+            value: http://todos-api:8082
+          - name: ZIPKIN_URL
+            value: http://zipkin:9411/api/v2/spans
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      schedulerName: default-scheduler
+      imagePullSecrets:
+      - name: dockerhub-image-pull-secret
