@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-api
+  labels:
+    app: users-api
+  annotations:
+    deployment.kubernetes.io/revision: '1'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-api
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: users-api
+    spec:
+      containers:
+        - image: registry.example.com/root/users-api/users-api
+          name: users-api
+          ports:
+          - containerPort: 8081
+          env:
+          - name: JWT_SECRET
+            value: myfancysecret
+          - name: SERVER_PORT
+            value: "8083"
+          - name: SPRING_ZIPKIN_BASE_URL
+            value: http://zipkin:9411
+        # image: users-api
+        # name: users-api
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      schedulerName: default-scheduler
+      imagePullSecrets:
+      - name: dockerhub-image-pull-secret
+
