@@ -1,22 +1,30 @@
 stages:
   - build
   - deploy
+  - remove
 image: docker
 
-variables:
-  DOCKER_HOST: tcp://192.168.2.2:2375
+# variables:
+#   DOCKER_HOST: tcp://192.168.2.2:2375
 
 build-job:
   stage: build
   script:
-    - docker login -u $CI_DEPLOY_USER -p $CI_DEPLOY_PASSWORD $CI_REGISTRY
     - echo "Start build job"
-    - docker build -f log-message-processor/Dockerfile -t registry.example.com/root/log-message-processor/log-message-processor:$CI_COMMIT_SHORT_SHA ./log-message-processor
-    - docker push registry.example.com/root/log-message-processor/log-message-processor:$CI_COMMIT_SHORT_SHA
+    - docker build -f log-message-processor/Dockerfile -t 192.168.2.2:5000/log-message-processor ./log-message-processor
+    - docker push 192.168.2.2:5000/log-message-processor
 
 deploy:
   stage: deploy
-  image: nastja1/test:k8s-deploy
   script:
-    - kubectl get pods -n micro
-    - kubectl apply -f ./k8s -n micro 
+    - docker pull 192.168.2.2:5000/log-message-processor
+    - pwd
+    - docker-compose up -d
+  allow_failure: true
+
+remove:
+  stage: remove
+  script:
+    - docker-compose down
+  when: manual
+
