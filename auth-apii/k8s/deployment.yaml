@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth_api
+  labels:
+    app: auth_api
+  annotations:
+    deployment.kubernetes.io/revision: '1'
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: auth_api
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: auth_api
+    spec:
+      containers:
+        - image: registry.example.com/root/auth_api/auth_api
+          name: auth_api
+          ports:
+          - containerPort: 8081
+          env:
+            - name: AUTH_API_PORT
+              value: "8081"
+            - name: JWT_SECRET
+              value: myfancysecret
+            - name: USERS_API_ADDRESS
+              value: http://users-api:8083
+            - name: ZIPKIN_URL
+              value: http://zipkin:9411/api/v2/spans
+      restartPolicy: Always
+      securityContext:
+        runAsUser: 1000
+        fsGroup: 1000
+      schedulerName: default-scheduler
