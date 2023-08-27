@@ -6,5 +6,6 @@ RUN chmod 777 mvnw \
 WORKDIR /usr/src/app
 COPY . .
 
+EXPOSE 8083
 
 CMD ["java", "-jar", "./target/users-api-0.0.1-SNAPSHOT.jar"]
