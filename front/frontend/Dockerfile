@@ -1,12 +1,8 @@
 FROM node:8-alpine
 
-EXPOSE 8080
-
-WORKDIR /usr/src/app
-
-COPY package.json ./
 RUN npm install
+WORKDIR /usr/src/app
+COPY package.json ./
 
-COPY . .
 
 CMD ["sh", "-c", "npm start" ]
