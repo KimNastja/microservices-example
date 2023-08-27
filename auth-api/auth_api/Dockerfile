@@ -5,8 +5,6 @@ RUN apk --no-cache add curl git && \
 WORKDIR /go/src/app
 
 
-COPY --from=build
-
 RUN dep ensure \
     go build -o auth-api
 
