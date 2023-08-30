@@ -14,7 +14,7 @@ services:
     hostname: front
     container_name: front
     ports:
-    - "8080:8080"
+    - "8080:80"
     environment:
     - AUTH_API_ADDRESS=http://auth-api:8081
     - PORT=8080

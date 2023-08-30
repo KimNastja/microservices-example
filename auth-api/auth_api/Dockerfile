@@ -5,10 +5,9 @@ curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
 WORKDIR /go/src/app
 
 COPY . . 
-RUN dep ensure \
+RUN dep ensure && \
 go build -o auth-api
 
 EXPOSE 8081
 
 CMD /go/src/app/auth-api
-
